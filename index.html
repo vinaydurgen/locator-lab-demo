@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Lufthansa Locator Healing Lab</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f6;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #0a3d62;
+        }
+        section {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 6px;
+            border: 2px solid #d0d4d9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            margin-top: 25px;
+        }
+        h2 {
+            color: #003366;
+            margin-top: 0;
+        }
+
+        input, select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #aaa;
+            margin: 5px 0;
+            width: 220px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #003399;
+            color: white;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Toast popup */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #222;
+            color: white;
+            padding: 12px;
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            border-radius: 6px;
+            opacity: 0;
+            z-index: 9999;
+            transition: opacity 0.4s, visibility 0.4s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Lufthansa Locator Healing Test Lab</h1>
+
+<div id="toast"></div>
+
+<script>
+function showToast(msg){
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2000);
+}
+</script>
+
+<!-- 🟦 NORMAL DOM (Lufthansa Style Search Form) -->
+<section>
+    <h2>1. Lufthansa Normal DOM Elements</h2>
+
+    <label>From</label><br/>
+    <input id="from-input" placeholder="Frankfurt (FRA)" /><br/>
+
+    <label>To</label><br/>
+    <input id="to-input" placeholder="New York (JFK)" /><br/>
+
+    <label>Travel Class</label><br/>
+    <select id="travel-class">
+        <option value="economy">Economy</option>
+        <option value="premium">Premium Economy</option>
+        <option value="business">Business</option>
+        <option value="first">First Class</option>
+    </select><br/>
+
+    <button class="btn" id="searchBtn">Search Flights</button>
+
+    <script>
+        document.getElementById("searchBtn").onclick = function(){
+            let f = document.getElementById("from-input").value;
+            let t = document.getElementById("to-input").value;
+            let c = document.getElementById("travel-class").value;
+
+            showToast("Search Triggered: " + f + " → " + t + " (" + c + ")");
+        };
+    </script>
+</section>
+
+
+<!-- 🟨 SHADOW DOM (Lufthansa Web Component Simulation) -->
+<section>
+    <h2>2. Lufthansa Shadow DOM Component</h2>
+
+    <div id="lh-cookie-banner"></div>
+
+    <script>
+        const host = document.getElementById("lh-cookie-banner");
+        const root = host.attachShadow({ mode: "open" });
+
+        root.innerHTML = `
+            <style>
+                .cookie-box {
+                    background: #003366;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 5px;
+                }
+                button {
+                    background: #ffcc00;
+                    color: black;
+                    padding: 8px 12px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            </style>
+
+            <div class="cookie-box">
+                <p>This Lufthansa website uses cookies.</p>
+                <button id="acceptCookies">Accept</button>
+            </div>
+        `;
+
+        root.querySelector("#acceptCookies").onclick = () => {
+            showToast("Lufthansa Cookie Accepted (Shadow DOM)!");
+        };
+    </script>
+</section>
+
+
+<!-- 🟩 IFRAME (Lufthansa Miles & More Login Simulation) -->
+<section>
+    <h2>3. Lufthansa Iframe (Miles & More Simulation)</h2>
+
+    <iframe id="milesFrame" style="width:100%; height:230px; border:1px solid #888;" srcdoc='
+        <!DOCTYPE html>
+        <html>
+        <body style="font-family:Arial;padding:10px;">
+            <h3 style="color:#003399;">Miles & More Login</h3>
+
+            <input id="mm-user" placeholder="Member ID" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
+            <input id="mm-pass" placeholder="Password" type="password" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
+
+            <button id="mm-login" style="padding:8px 12px;background:#003399;color:white;border:none;border-radius:4px;">
+                Login
+            </button>
+
+            <script>
+                document.getElementById("mm-login").onclick = function(){
+                    let id = document.getElementById("mm-user").value;
+                    parent.postMessage("MM_LOGIN:" + id, "*");
+                };
+            </script>
+        </body>
+        </html>
+    '></iframe>
+
+    <script>
+        window.addEventListener("message", (e) => {
+            if(e.data.startsWith("MM_LOGIN:")){
+                const member = e.data.replace("MM_LOGIN:","");
+                showToast("Miles & More Login: " + member);
+            }
+        });
+    </script>
+
+</section>
+
+
+<!-- 🟥 Dynamic Attribute Mutation (Lufthansa Changing DOM Simulation) -->
+<section>
+    <h2>4. Dynamic Lufthansa Changing DOM</h2>
+
+    <button id="dynamicLhBtn" class="btn" data-id="lh-1001">Dynamic Lufthansa Button</button>
+
+    <script>
+        setInterval(() => {
+            const btn = document.getElementById("dynamicLhBtn");
+            btn.setAttribute("data-id", "LH-" + Math.floor(Math.random()*9999));
+            btn.className = "btn lh-" + Math.floor(Math.random()*9999);
+        }, 3000);
+
+        document.getElementById("dynamicLhBtn").onclick = () => {
+            showToast("Dynamic Lufthansa button clicked!");
+        };
+    </script>
+</section>
+
+</body>
+</html>
