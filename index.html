@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Lufthansa Locator Healing Lab</title>
+    <title>Lufthansa Locator Healing Lab - Full Validation</title>
 
     <style>
         body {
@@ -22,17 +22,15 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.08);
             margin-top: 25px;
         }
-        h2 {
-            color: #003366;
-            margin-top: 0;
-        }
         input, select {
             padding: 8px 12px;
             border-radius: 4px;
             border: 1px solid #aaa;
             margin: 5px 0;
-            width: 220px;
+            width: 250px;
         }
+        h2 { color: #003366; }
+
         .btn {
             padding: 10px 15px;
             background: #003399;
@@ -43,7 +41,6 @@
             margin-top: 10px;
         }
 
-        /* Toast popup */
         #toast {
             visibility: hidden;
             min-width: 200px;
@@ -56,7 +53,7 @@
             border-radius: 6px;
             opacity: 0;
             z-index: 9999;
-            transition: opacity 0.4s, visibility 0.4s;
+            transition: opacity .4s, visibility .4s;
         }
         #toast.show { visibility: visible; opacity: 1; }
     </style>
@@ -64,194 +61,183 @@
 
 <body>
 
-<h1>Locator Healing Test Lab</h1>
+<h1>Locator Healing Validation Lab</h1>
 <div id="toast"></div>
 
 <script>
 function showToast(msg){
-    const toast = document.getElementById("toast");
-    toast.textContent = msg;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 2000);
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2000);
 }
 </script>
 
 
-<!-- 1. Normal DOM -->
+<!-- 1️⃣ NORMAL DOM -->
 <section>
-    <h2>1. Normal DOM Elements</h2>
+    <h2>1. Normal DOM - Flight Search</h2>
 
-    <label>From</label><br/>
-    <input id="from-input" placeholder="Frankfurt (FRA)" /><br/>
+    <input id="from-input" name="fromCity" data-lh="from" placeholder="From City">
+    <input id="to-input" name="toCity" data-lh="to" placeholder="To City">
 
-    <label>To</label><br/>
-    <input id="to-input" placeholder="New York (JFK)" /><br/>
+    <input id="dept-date" type="date" name="departDate" data-type="date">
+    <input id="passenger-count" type="number" name="passCount" min="1" max="10" placeholder="Passengers">
 
-    <label>Travel Class</label><br/>
-    <select id="travel-class">
-        <option value="economy">Economy</option>
-        <option value="premium">Premium Economy</option>
-        <option value="business">Business</option>
-        <option value="first">First Class</option>
-    </select><br/>
+    <select id="travel-class" name="class">
+        <option value="">Select Class</option>
+        <option>Economy</option>
+        <option>Business</option>
+        <option>First</option>
+    </select>
 
-    <button class="btn" id="searchBtn">Search Flights</button>
+    <button class="btn" id="validate1">Validate Section 1</button>
 
     <script>
-        document.getElementById("searchBtn").onclick = function(){
-            let f = document.getElementById("from-input").value;
-            let t = document.getElementById("to-input").value;
-            let c = document.getElementById("travel-class").value;
-            showToast("Search Triggered: " + f + " → " + t + " (" + c + ")");
+        validate1.onclick = ()=>{
+            if(!from-input.value.trim() || !to-input.value.trim() ||
+               !dept-date.value || !passenger-count.value || !travel-class.value){
+                showToast("❌ Section 1 Invalid");
+            } else showToast("✅ Section 1 Valid");
         };
     </script>
 </section>
 
 
-<!-- 2. Shadow DOM -->
-<section>
-    <h2>2. Shadow DOM Component</h2>
 
-    <div id="lh-cookie-banner"></div>
+<!-- 2️⃣ SHADOW DOM -->
+<section>
+    <h2>2. Shadow DOM - Cookie & Email</h2>
+
+    <div id="shadowHost"></div>
+
+    <button class="btn" id="validateShadow">Validate Section 2</button>
 
     <script>
-        const host = document.getElementById("lh-cookie-banner");
-        const root = host.attachShadow({ mode: "open" });
+        const host = document.getElementById("shadowHost");
+        const root = host.attachShadow({ mode:"open" });
 
         root.innerHTML = `
-            <style>
-                .cookie-box {
-                    background: #003366;
-                    color: white;
-                    padding: 15px;
-                    border-radius: 5px;
-                }
-                button {
-                    background: #ffcc00;
-                    color: black;
-                    padding: 8px 12px;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-            </style>
-
-            <div class="cookie-box">
-                <p>This website uses cookies.</p>
-                <button id="acceptCookies">Accept</button>
-            </div>
+            <input id="userEmail" type="email" placeholder="Enter Email" data-role="user">
+            <label>
+                <input id="consent" type="checkbox"> Accept Cookies
+            </label>
         `;
 
-        root.querySelector("#acceptCookies").onclick = () => {
-            showToast("Cookie Accepted (Shadow DOM)!");
+        validateShadow.onclick = ()=>{
+            let email = root.querySelector("#userEmail").value;
+            let consent = root.querySelector("#consent").checked;
+            if(!email || !consent){
+                showToast("❌ Section 2 Invalid");
+            } else showToast("✅ Section 2 Valid");
         };
     </script>
 </section>
 
 
-<!-- 3. Iframe -->
+
+<!-- 3️⃣ IFRAME -->
 <section>
-    <h2>3. Iframe (Miles & More Simulation)</h2>
+    <h2>3. Iframe - Login & Membership</h2>
 
-    <iframe id="milesFrame" style="width:100%; height:230px; border:1px solid #888;" srcdoc='
-        <!DOCTYPE html>
-        <html>
-        <body style="font-family:Arial;padding:10px;">
-            <h3 style="color:#003399;">Miles & More Login</h3>
+    <iframe id="frame" style="width:100%; height:260px;" srcdoc="
+        <input id='u' data-type='username' placeholder='User Name'><br/><br/>
+        <input id='mID' placeholder='Membership ID'><br/><br/>
+        <input id='p' type='password' data-type='pass' placeholder='Password'><br/><br/>
 
-            <input id="mm-user" placeholder="Member ID" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
-            <input id="mm-pass" type="password" placeholder="Password" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
+        <button id='send'>Validate</button>
 
-            <button id="mm-login" style="padding:8px 12px;background:#003399;color:white;border:none;border-radius:4px;">
-                Login
-            </button>
-
-            <script>
-                document.getElementById("mm-login").onclick = function(){
-                    let id = document.getElementById("mm-user").value;
-                    parent.postMessage("MM_LOGIN:" + id, "*");
-                };
-            </script>
-        </body>
-        </html>
-    '></iframe>
+        <script>
+            document.getElementById('send').onclick = () => {
+                let u = document.getElementById('u').value.trim();
+                let m = document.getElementById('mID').value.trim();
+                let p = document.getElementById('p').value.trim();
+                parent.postMessage('IFRAME:' + (!!u && !!m && !!p), '*');
+            };
+        </script>
+    "></iframe>
 
     <script>
-        window.addEventListener("message", (e) => {
-            if(e.data.startsWith("MM_LOGIN:")){
-                showToast("Miles & More Login: " + e.data.replace("MM_LOGIN:",""));
+        window.addEventListener("message", e=>{
+            if(e.data.startsWith("IFRAME:")){
+                let ok = e.data.split(":")[1] === "true";
+                showToast(ok ? "✅ Section 3 Valid" : "❌ Section 3 Invalid");
             }
         });
     </script>
 </section>
 
 
-<!-- 4. Dynamic Changing DOM -->
-<section>
-    <h2>4. Dynamic Changing DOM</h2>
 
-    <button id="dynamicLhBtn" class="btn" data-id="lh-1001">Dynamic Button</button>
+<!-- 4️⃣ DYNAMIC DOM -->
+<section>
+    <h2>4. Dynamic DOM - Changing Attributes</h2>
+
+    <input id="dynInput" data-random="123" placeholder="Enter dynamic field">
+    <input id="dynCode" data-code="LH" placeholder="Enter Code">
+
+    <button class="btn" id="validateDyn">Validate Section 4</button>
 
     <script>
-        setInterval(() => {
-            const btn = document.getElementById("dynamicLhBtn");
-            btn.setAttribute("data-id", "LH-" + Math.floor(Math.random()*9999));
-            btn.className = "btn lh-" + Math.floor(Math.random()*9999);
-        }, 3000);
+        setInterval(()=>{
+            dynInput.setAttribute("data-random", "R" + Math.floor(Math.random()*9999));
+            dynCode.setAttribute("data-code", "LH" + Math.floor(Math.random()*99));
+        }, 2000);
 
-        document.getElementById("dynamicLhBtn").onclick = () => {
-            showToast("Dynamic button clicked!");
+        validateDyn.onclick = ()=>{
+            if(!dynInput.value.trim() || !dynCode.value.trim()){
+                showToast("❌ Section 4 Invalid");
+            } else showToast("✅ Section 4 Valid");
         };
     </script>
 </section>
 
 
 
-<!-- 5. Nested Parent/Child/Sibling Locator Healing -->
+<!-- 5️⃣ PARENT/CHILD/SIBLING -->
 <section>
-    <h2>5. Nested Parent → Child → Sibling Structure</h2>
+    <h2>5. Parent → Child → Sibling Validation</h2>
 
-    <div id="parentBox" style="border:1px solid #ccc;padding:15px;width:260px;">
-        <label id="flightLabel">Flight Number</label><br/>
-
-        <div class="input-wrapper">
-            <input id="flight-input" placeholder="LH1234"/>
-            <span class="icon" style="margin-left:5px;">🔍</span>
+    <div id="box">
+        <label>Flight Details</label>
+        <div>
+            <input id="airlineCode" name="airline" placeholder="LH">
+            <input id="flightNo" name="flight" placeholder="1234">
+            <input id="flightDate" type="date">
         </div>
     </div>
 
-    <button id="breakLocatorBtn" class="btn">Break main locator</button>
+    <button class="btn" id="validate5">Validate Section 5</button>
 
     <script>
-        document.getElementById("breakLocatorBtn").onclick = () => {
-            const input = document.getElementById("flight-input");
-            input.removeAttribute("id");  // breaking the main locator
-            showToast("Main locator removed — healing must use wrapper/sibling!");
+        validate5.onclick = ()=>{
+            if(!airlineCode.value.trim() || !flightNo.value.trim() || !flightDate.value){
+                showToast("❌ Section 5 Invalid");
+            } else showToast("✅ Section 5 Valid");
         };
     </script>
 </section>
 
 
 
-<!-- 6. Duplicate Elements Locator Healing -->
+<!-- 6️⃣ DUPLICATE ELEMENTS -->
 <section>
-    <h2>6. Duplicate Elements (Context-Based Healing)</h2>
+    <h2>6. Duplicate Elements - City Inputs</h2>
 
-    <label>Choose City</label><br/>
-
-    <div style="display:flex;gap:10px;">
-        <input class="city-input" placeholder="City 1">
-        <input class="city-input" placeholder="City 2">
-        <input class="city-input" placeholder="City 3">
+    <div id="cityGroup" style="display:flex;gap:15px;">
+        <input class="city" name="city1" data-city-id="001" aria-label="city input" placeholder="City 1">
+        <input class="city" name="city2" data-city-id="002" aria-label="city input" placeholder="City 2">
+        <input class="city" name="city3" data-city-id="003" aria-label="city input" placeholder="City 3">
     </div>
 
-    <button id="breakDupBtn" class="btn">Break City 2 locator</button>
+    <button class="btn" id="validate6">Validate Section 6</button>
 
     <script>
-        document.getElementById("breakDupBtn").onclick = () => {
-            const target = document.getElementsByClassName("city-input")[1];
-            target.removeAttribute("class"); // break locator
-            showToast("City 2 locator removed — model must detect by placeholder!");
+        validate6.onclick = ()=>{
+            let i = document.querySelectorAll("#cityGroup input");
+            if([...i].some(x => x.value.trim() === "")){
+                showToast("❌ Section 6 Invalid");
+            } else showToast("✅ Section 6 Valid");
         };
     </script>
 </section>
