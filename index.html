@@ -93,14 +93,22 @@ function showToast(msg){
 
     <button class="btn" id="validate1">Validate Section 1</button>
 
-    <script>
-        validate1.onclick = ()=>{
-            if(!from-input.value.trim() || !to-input.value.trim() ||
-               !dept-date.value || !passenger-count.value || !travel-class.value){
-                showToast("❌ Section 1 Invalid");
-            } else showToast("✅ Section 1 Valid");
-        };
-    </script>
+<script>
+validate1.onclick = ()=>{
+    let from = document.getElementById("from-input").value.trim();
+    let to = document.getElementById("to-input").value.trim();
+    let date = document.getElementById("dept-date").value;
+    let count = document.getElementById("passenger-count").value;
+    let cls = document.getElementById("travel-class").value;
+
+    if(!from || !to || !date || !count || !cls){
+        showToast("❌ Section 1 Invalid");
+    } else {
+        showToast("✅ Section 1 Valid");
+    }
+};
+</script>
+
 </section>
 
 
