@@ -26,7 +26,6 @@
             color: #003366;
             margin-top: 0;
         }
-
         input, select {
             padding: 8px 12px;
             border-radius: 4px;
@@ -34,7 +33,6 @@
             margin: 5px 0;
             width: 220px;
         }
-
         .btn {
             padding: 10px 15px;
             background: #003399;
@@ -60,17 +58,13 @@
             z-index: 9999;
             transition: opacity 0.4s, visibility 0.4s;
         }
-        #toast.show {
-            visibility: visible;
-            opacity: 1;
-        }
+        #toast.show { visibility: visible; opacity: 1; }
     </style>
 </head>
 
 <body>
 
-<h1>Lufthansa Locator Healing Test Lab</h1>
-
+<h1>Locator Healing Test Lab</h1>
 <div id="toast"></div>
 
 <script>
@@ -82,9 +76,10 @@ function showToast(msg){
 }
 </script>
 
-<!-- 🟦 NORMAL DOM (Lufthansa Style Search Form) -->
+
+<!-- 1. Normal DOM -->
 <section>
-    <h2>1. Lufthansa Normal DOM Elements</h2>
+    <h2>1. Normal DOM Elements</h2>
 
     <label>From</label><br/>
     <input id="from-input" placeholder="Frankfurt (FRA)" /><br/>
@@ -107,16 +102,15 @@ function showToast(msg){
             let f = document.getElementById("from-input").value;
             let t = document.getElementById("to-input").value;
             let c = document.getElementById("travel-class").value;
-
             showToast("Search Triggered: " + f + " → " + t + " (" + c + ")");
         };
     </script>
 </section>
 
 
-<!-- 🟨 SHADOW DOM (Lufthansa Web Component Simulation) -->
+<!-- 2. Shadow DOM -->
 <section>
-    <h2>2. Lufthansa Shadow DOM Component</h2>
+    <h2>2. Shadow DOM Component</h2>
 
     <div id="lh-cookie-banner"></div>
 
@@ -143,21 +137,21 @@ function showToast(msg){
             </style>
 
             <div class="cookie-box">
-                <p>This Lufthansa website uses cookies.</p>
+                <p>This website uses cookies.</p>
                 <button id="acceptCookies">Accept</button>
             </div>
         `;
 
         root.querySelector("#acceptCookies").onclick = () => {
-            showToast("Lufthansa Cookie Accepted (Shadow DOM)!");
+            showToast("Cookie Accepted (Shadow DOM)!");
         };
     </script>
 </section>
 
 
-<!-- 🟩 IFRAME (Lufthansa Miles & More Login Simulation) -->
+<!-- 3. Iframe -->
 <section>
-    <h2>3. Lufthansa Iframe (Miles & More Simulation)</h2>
+    <h2>3. Iframe (Miles & More Simulation)</h2>
 
     <iframe id="milesFrame" style="width:100%; height:230px; border:1px solid #888;" srcdoc='
         <!DOCTYPE html>
@@ -166,7 +160,7 @@ function showToast(msg){
             <h3 style="color:#003399;">Miles & More Login</h3>
 
             <input id="mm-user" placeholder="Member ID" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
-            <input id="mm-pass" placeholder="Password" type="password" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
+            <input id="mm-pass" type="password" placeholder="Password" style="padding:8px;width:200px;border-radius:4px;"><br/><br/>
 
             <button id="mm-login" style="padding:8px 12px;background:#003399;color:white;border:none;border-radius:4px;">
                 Login
@@ -185,20 +179,18 @@ function showToast(msg){
     <script>
         window.addEventListener("message", (e) => {
             if(e.data.startsWith("MM_LOGIN:")){
-                const member = e.data.replace("MM_LOGIN:","");
-                showToast("Miles & More Login: " + member);
+                showToast("Miles & More Login: " + e.data.replace("MM_LOGIN:",""));
             }
         });
     </script>
-
 </section>
 
 
-<!-- 🟥 Dynamic Attribute Mutation (Lufthansa Changing DOM Simulation) -->
+<!-- 4. Dynamic Changing DOM -->
 <section>
-    <h2>4. Dynamic Lufthansa Changing DOM</h2>
+    <h2>4. Dynamic Changing DOM</h2>
 
-    <button id="dynamicLhBtn" class="btn" data-id="lh-1001">Dynamic Lufthansa Button</button>
+    <button id="dynamicLhBtn" class="btn" data-id="lh-1001">Dynamic Button</button>
 
     <script>
         setInterval(() => {
@@ -208,10 +200,62 @@ function showToast(msg){
         }, 3000);
 
         document.getElementById("dynamicLhBtn").onclick = () => {
-            showToast("Dynamic Lufthansa button clicked!");
+            showToast("Dynamic button clicked!");
         };
     </script>
 </section>
+
+
+
+<!-- 5. Nested Parent/Child/Sibling Locator Healing -->
+<section>
+    <h2>5. Nested Parent → Child → Sibling Structure</h2>
+
+    <div id="parentBox" style="border:1px solid #ccc;padding:15px;width:260px;">
+        <label id="flightLabel">Flight Number</label><br/>
+
+        <div class="input-wrapper">
+            <input id="flight-input" placeholder="LH1234"/>
+            <span class="icon" style="margin-left:5px;">🔍</span>
+        </div>
+    </div>
+
+    <button id="breakLocatorBtn" class="btn">Break main locator</button>
+
+    <script>
+        document.getElementById("breakLocatorBtn").onclick = () => {
+            const input = document.getElementById("flight-input");
+            input.removeAttribute("id");  // breaking the main locator
+            showToast("Main locator removed — healing must use wrapper/sibling!");
+        };
+    </script>
+</section>
+
+
+
+<!-- 6. Duplicate Elements Locator Healing -->
+<section>
+    <h2>6. Duplicate Elements (Context-Based Healing)</h2>
+
+    <label>Choose City</label><br/>
+
+    <div style="display:flex;gap:10px;">
+        <input class="city-input" placeholder="City 1">
+        <input class="city-input" placeholder="City 2">
+        <input class="city-input" placeholder="City 3">
+    </div>
+
+    <button id="breakDupBtn" class="btn">Break City 2 locator</button>
+
+    <script>
+        document.getElementById("breakDupBtn").onclick = () => {
+            const target = document.getElementsByClassName("city-input")[1];
+            target.removeAttribute("class"); // break locator
+            showToast("City 2 locator removed — model must detect by placeholder!");
+        };
+    </script>
+</section>
+
 
 </body>
 </html>
