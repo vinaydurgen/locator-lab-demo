@@ -1,17 +1,27 @@
 # HTML
 # Archive your static HTML project and save it with the build record.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
 
 trigger:
 - main
 
+# 🔴 CHANGED: Use self-hosted agent instead of Microsoft-hosted
 pool:
-  vmImage: ubuntu-latest
+  name: Self-Hosted
 
 steps:
+- checkout: self
+
 - task: ArchiveFiles@2
+  displayName: 'Archive source files'
   inputs:
-    rootFolderOrFile: '$(build.sourcesDirectory)'
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
     includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/html-build.zip'
+    replaceExistingArchive: true
+
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish HTML Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'html-artifact'
